@@ -71,7 +71,8 @@ $ git config --global user.email "email@example.com"
 3. 复制远程仓库：`$ git clone + SHH`就能在本地文件夹创建一个一模一样的文件夹了
 
 4. 如果想删除文件咋办呢？
-    * 你可以直接在文件夹删除，然后上传到远程仓库
+    * 用指令`$ git rm 文件名`删除
+    * 你可以直接在文件（文件夹）删除，然后上传到远程仓库
     * 如果没有反应。你可以用-f硬核删除（覆盖）
 
 ## 六、创建与合并分支
@@ -89,4 +90,34 @@ $ git config --global user.email "email@example.com"
     <!-- 切换到主分支 -->
     $ git switch master
     ```
+
 7. 当存在冲突时，必须手动解决冲突然后再上传才可以
+
+## 八、分支管理策略
+
+1. master分支应该非常稳定，仅用来发布新版本
+2. dev分支上用来干活，因此dev分支很不稳定
+3. `git merge --no-ff -m "merge with no-ff" dev`禁用了Fast forward,使得在删除分支后不会丢失分支信息
+4. `git stash` 把要修复的bug存储起来
+5. 从哪个分支修复BUG就在哪个分支上创建临时分支
+6. 修复完成后合并到master上然后删除临时分支
+7. 如何恢复删除的临时分支呢？
+    * 一是用`git stash apply`恢复，但是恢复后，stash内容并不删除，你需要用`git stash drop`来删除
+    * 另一种方式是用`git stash pop`，恢复的同时把stash内容也删了
+8. 开发一个新feature，最好新建一个分支，如果要丢弃一个没有被合并过的分支，可以通过`git branch -D 名字`强行删除
+9. 查看远程信息：`git remote`  -v可以查看更详细的信息
+10. 推送分支：`git remote 分支`
+11. 推送失败可以使用`git pull`试图合并
+
+## 九、标签管理
+
+1. 打进一个新的标签：`git tag 名称`
+2. `git tag`可以查看所有标签
+3. 如果本应该在三天前打的标签，忘记打了怎么办？
+    * 先使用`git log --pretty=oneline --abbrev-commit`找到以往commit的id
+    * 然后使用`git tag 名称 ID`打入标签
+4. `git show 标签名称`可以查看标签信息
+5. 删除标签：`git tag -d 标签名称`
+6. 标签推送到远程：`git push origin 标签名称`
+7. 一次性推送所有标签：`git push origin --tags`
+8. 如果想删除远程标签，就先删除本地标签，在用`git push origin :refs/tags/标签名称`在远端删除
